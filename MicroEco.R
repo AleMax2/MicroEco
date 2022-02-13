@@ -1,3 +1,4 @@
+library(dplyr)
 data <- read.csv('BDD_reduce.csv', sep=";")
 data$DCRANna<- as.numeric(data$DCRAN)# il elimine la corse, mais il elimine le 0 au debut.
 data$COMMna<- as.numeric(data$COMMUNE)
@@ -6,7 +7,7 @@ sum(data$change, na.rm=T)
 sum(is.na(data$change))
 #test <- subset(data, is.na(change)) # ce qu'on vien d'eliminer
 data2 <- subset(data, !is.na(change))
-data2 <- subset(data2, select = -c(COMMUNE, ARM, DCRAN))
+data2 <- select(data2,-c(COMMUNE, ARM, DCRAN))
 # Encoding EMPL
 data2<- data2 %>%
   mutate(EMPLenc = case_when(
@@ -22,7 +23,7 @@ data2<- data2 %>%
     EMPL == "ZZ" ~ "NA",
     TRUE ~ as.character(EMPL)
   ))
-data2 <- subset(data2, select = -c(EMPL))
+data2 <- select(data2,-c(EMPL))
 # Encoding CATPC
 data2<- data2 %>%
   mutate(CATPCenc = case_when(
@@ -31,7 +32,7 @@ data2<- data2 %>%
     CATPC == "2" ~ "habmobiles",
     TRUE ~ as.character(CATPC)
   ))
-data2 <- subset(data2, select = -c(CATPC))
+data2 <- select(data2,-c(CATPC))
 # Encoding CS1
 data2<- data2 %>%
   mutate(CS1enc = case_when(
@@ -45,7 +46,7 @@ data2<- data2 %>%
     CS1 == "8" ~ "Autresans",
     TRUE ~ as.character(CS1)
   ))
-data2 <- subset(data2, select = -c(CS1))
+data2 <- select(data2,-c(CS1))
 # Encoding CSM (categorie de la personne de reference du menage)
 data2<- data2 %>%
   mutate(CSMenc = case_when(
@@ -60,7 +61,7 @@ data2<- data2 %>%
     CSM == "Z" ~ "HLO",
     TRUE ~ as.character(CSM)
   ))
-data2 <- subset(data2, select = -c(CSM))
+data2 <- select(data2,-c(CSM))
 # Encoding DIPL
 data2<- data2 %>%
   mutate(DIPLenc = case_when(
@@ -79,7 +80,7 @@ data2<- data2 %>%
     DIPL == "ZZ" ~ "Moins14",
     TRUE ~ as.character(DIPL)
   ))
-data2 <- subset(data2, select = -c(DIPL))
+data2 <- select(data2,-c(DIPL))
 # Encoding INAI
 data2<- data2 %>%
   mutate(INAIenc = case_when(
@@ -91,7 +92,7 @@ data2<- data2 %>%
     INAI == "6" ~ "Etranger",
     TRUE ~ as.character(INAI)
   ))
-data2 <- subset(data2, select = -c(INAI))
+data2 <- select(data2,-c(INAI))
 # Encoding INATC
 data2<- data2 %>%
   mutate(Nationalite = case_when(
@@ -99,7 +100,7 @@ data2<- data2 %>%
     INATC == "2" ~ "Etranger",
     TRUE ~ as.character(INATC)
   ))
-data2 <- subset(data2, select = -c(INATC))
+data2 <- select(data2,-c(INATC))
 # Encoding IRAN
 data2<- data2 %>%
   mutate(ResAnte = case_when(
@@ -116,7 +117,7 @@ data2<- data2 %>%
     IRAN == "Z" ~ "NewNe",
     TRUE ~ as.character(IRAN)
   ))
-data2 <- subset(data2, select = -c(IRAN))
+data2 <- select(data2,-c(IRAN))
 # Encoding IRANUU
 data2<- data2 %>%
   mutate(Urbain = case_when(
@@ -128,7 +129,7 @@ data2<- data2 %>%
     IRANUU == "Z" ~ "NewNe",
     TRUE ~ as.character(IRANUU)
   ))
-data2 <- subset(data2, select = -c(IRANUU))
+data2 <- select(data2,-c(IRANUU))
 # Encoding LPRM
 data2<- data2 %>%
   mutate(Refmen = case_when(
@@ -144,7 +145,7 @@ data2<- data2 %>%
     LPRM == "Z" ~ "HLO",
     TRUE ~ as.character(LPRM)
   ))
-data2 <- subset(data2, select = -c(LPRM))
+data2 <- select(data2,-c(LPRM))
 # Encoding METRODOM
 data2<- data2 %>%
   mutate(METRODOMenc = case_when(
@@ -152,7 +153,7 @@ data2<- data2 %>%
     METRODOM == "D" ~ "DOM",
     TRUE ~ as.character(METRODOM)
   ))
-data2 <- subset(data2, select = -c(METRODOM))
+data2 <- select(data2,-c(METRODOM))
 # Encoding MOCO
 data2<- data2 %>%
   mutate(Cohabitation = case_when(
@@ -166,7 +167,7 @@ data2<- data2 %>%
     MOCO == "40" ~ "horsmen",
     TRUE ~ as.character(MOCO)
   ))
-data2 <- subset(data2, select = -c(MOCO))
+data2 <- select(data2,-c(MOCO))
 # Encoding NA17 (activite eco 17 classes)
 data2<- data2 %>%
   mutate(Eco17 = case_when(
@@ -190,7 +191,7 @@ data2<- data2 %>%
     NA17 == "ZZ" ~ "NA",
     TRUE ~ as.character(NA17)
   ))
-data2 <- subset(data2, select = -c(NA17))
+data2 <- select(data2,-c(NA17))
 # Encoding NA5 (activite eco 5 classes)
 data2<- data2 %>%
   mutate(Eco5 = case_when(
@@ -202,7 +203,7 @@ data2<- data2 %>%
     NA5 == "ZZ" ~ "NA",
     TRUE ~ as.character(NA5)
   ))
-data2 <- subset(data2, select = -c(NA5))
+data2 <- select(data2,-c(NA5))
 # Encoding NPERR
 data2<- data2 %>%
   mutate(NPERS = case_when(
@@ -215,7 +216,7 @@ data2<- data2 %>%
     NPERR == "Z" ~ "HLO",
     TRUE ~ as.character(NPERR)
   ))
-data2 <- subset(data2, select = -c(NPERR))
+data2 <- select(data2,-c(NPERR))
 # Encoding RECH
 data2<- data2 %>%
   mutate(RECHenc = case_when(
@@ -226,7 +227,7 @@ data2<- data2 %>%
     RECH == "Z" ~ "NA",
     TRUE ~ as.character(RECH)
   ))
-data2 <- subset(data2, select = -c(RECH))
+data2 <- select(data2,-c(RECH))
 # Encoding SEXE
 data2<- data2 %>%
   mutate(SEXEenc = case_when(
@@ -234,7 +235,7 @@ data2<- data2 %>%
     SEXE == "2" ~ "Femmes",
     TRUE ~ as.character(SEXE)
   ))
-data2 <- subset(data2, select = -c(SEXE))
+data2 <- select(data2,-c(SEXE))
 # Encoding STOCD
 data2<- data2 %>%
   mutate(STOCC = case_when(
@@ -247,7 +248,7 @@ data2<- data2 %>%
     STOCD == "Zz" ~ "HLO",
     TRUE ~ as.character(STOCD)
   ))
-data2 <- subset(data2, select = -c(STOCD))
+data2 <- select(data2,-c(STOCD))
 # Encoding TACT
 data2<- data2 %>%
   mutate(TACTenc = case_when(
@@ -260,7 +261,7 @@ data2<- data2 %>%
     TACT == "25" ~ "Incatif",
     TRUE ~ as.character(TACT)
   ))
-data2 <- subset(data2, select = -c(TACT))
+data2 <- select(data2,-c(TACT))
 # Encoding TACTM
 data2<- data2 %>%
   mutate(TACTMENenc = case_when(
@@ -275,7 +276,7 @@ data2<- data2 %>%
     TACTM == "ZZ" ~ "HLO",
     TRUE ~ as.character(TACTM)
   ))
-data2 <- subset(data2, select = -c(TACTM))
+data2 <- select(data2,-c(TACTM))
 # Encoding TRANS
 data2<- data2 %>%
   mutate(TRANSenc = case_when(
@@ -288,7 +289,7 @@ data2<- data2 %>%
     TRANS == "Z" ~ "NA",
     TRUE ~ as.character(TRANS)
   ))
-data2 <- subset(data2, select = -c(TRANS))
+data2 <- select(data2,-c(TRANS))
 # Encoding TYPC
 data2<- data2 %>%
   mutate(TYPCONSTR = case_when(
@@ -301,7 +302,7 @@ data2<- data2 %>%
     TYPC == "Z" ~ "HLO",
     TRUE ~ as.character(TYPC)
   ))
-data2 <- subset(data2, select = -c(TYPC))
+data2 <- select(data2,-c(TYPC))
 # Encoding TYPL
 data2<- data2 %>%
   mutate(TYPLenc = case_when(
@@ -314,7 +315,7 @@ data2<- data2 %>%
     TYPL == "Z" ~ "HLO",
     TRUE ~ as.character(TYPL)
   ))
-data2 <- subset(data2, select = -c(TYPL))
+data2 <- select(data2,-c(TYPL))
 # Encoding TYPMR
 data2<- data2 %>%
   mutate(TYPMRenc = case_when(
@@ -330,4 +331,23 @@ data2<- data2 %>%
     TYPMR == "ZZ" ~ "HLO",
     TRUE ~ as.character(TYPMR)
   ))
-data2 <- subset(data2, select = -c(TYPMR))
+data2 <- select(data2,-c(TYPMR))
+# Encoding ANEMC
+data2<- data2 %>%
+  mutate(ANEMCenc = case_when(
+    ANEMC == "0" ~ "Moinsde2",
+    ANEMC == "1" ~ "2a4ans",
+    ANEMC == "2" ~ "5a9ans",
+    ANEMC == "3" ~ "10a19ans",
+    ANEMC == "4" ~ "20a29ans",
+    ANEMC == "5" ~ "30ouplus",
+    ANEMC == "9" ~ "LogOrdInocc",
+    ANEMC == "Z" ~ "HLO",
+    TRUE ~ as.character(ANEMC)
+  ))
+data2 <- select(data2,-c(ANEMC))
+# L'age avec les valeurs inferieures as numeric.
+# data2$AGEREVQnum<- as.numeric(data2$AGEREVQ)
+# Il n'y a pas de nouveaux nees.
+sum(ifelse(data$ResAnte == "NewNe",1,0))
+
