@@ -1,5 +1,6 @@
 library(dplyr)
 data <- read.csv('BDD_reduce.csv', sep=";")
+data<- data[sample(1:nrow(data),2000000),]
 data$DCRANna<- as.numeric(data$DCRAN)# il elimine la corse, mais il elimine le 0 au debut.
 data$COMMna<- as.numeric(data$COMMUNE)
 data$change<- ifelse(data$COMMna != data$DCRANna,1,0)
@@ -217,6 +218,7 @@ data2<- data2 %>%
     TRUE ~ as.character(NPERR)
   ))
 data2 <- select(data2,-c(NPERR))
+data2$NPERS<- as.numeric(data2$NPERS)
 # Encoding RECH
 data2<- data2 %>%
   mutate(RECHenc = case_when(
@@ -245,7 +247,7 @@ data2<- data2 %>%
     STOCD == "22" ~ "LocHLM",
     STOCD == "23" ~ "Locmeuble",
     STOCD == "30" ~ "Locgratuit",
-    STOCD == "Zz" ~ "HLO",
+    STOCD == "ZZ" ~ "HLO",
     TRUE ~ as.character(STOCD)
   ))
 data2 <- select(data2,-c(STOCD))
@@ -319,14 +321,14 @@ data2 <- select(data2,-c(TYPL))
 # Encoding TYPMR
 data2<- data2 %>%
   mutate(TYPMRenc = case_when(
-    TYPMR == "11" ~ "HSeul",
-    TYPMR == "12" ~ "FSeule",
+    TYPMR == "11" ~ "Seul",
+    TYPMR == "12" ~ "Seul",
     TYPMR == "20" ~ "Plusieurs",
-    TYPMR == "31" ~ "MonoparentH",
-    TYPMR == "32" ~ "MonoparentF",
+    TYPMR == "31" ~ "Monoparent",
+    TYPMR == "32" ~ "Monoparent",
     TYPMR == "41" ~ "Coupleactif",
-    TYPMR == "42" ~ "Hactconjautre",
-    TYPMR == "43" ~ "Factconjautre",
+    TYPMR == "42" ~ "actconjautre",
+    TYPMR == "43" ~ "actconjautre",
     TYPMR == "44" ~ "Coupleautre",
     TYPMR == "ZZ" ~ "HLO",
     TRUE ~ as.character(TYPMR)
@@ -349,5 +351,39 @@ data2 <- select(data2,-c(ANEMC))
 # L'age avec les valeurs inferieures as numeric.
 # data2$AGEREVQnum<- as.numeric(data2$AGEREVQ)
 # Il n'y a pas de nouveaux nees.
-sum(ifelse(data$ResAnte == "NewNe",1,0))
-
+#table(data2$Urbain)
+# Che variabili usare? Che variabili descrivere? Che variabili usare nel modello logit?
+# Exploring CATPCenc
+#table(data2$CATPCenc)
+#Checking how many HLO
+#table(data2$ANEMCenc)
+# Checking ho many hors residence principale.
+#table(data2$TACTMENenc)
+# Starting the modelling
+#summary(lm(change~CATPCenc,data=data2))
+# Selecting que la population des menages
+rm(data)
+datamen<- data2[data2$CATPCenc == "menages",]
+rm(data2)
+# After selecting que la pop des menages on essaye de modeliser.
+datared<- datamen[sample(1:nrow(datamen),1000000),]
+datared$AGEREVQ2<- datared$AGEREVQ^2
+# Testing different reference categories
+datared$CSMenc <- relevel(factor(datared$CSMenc), ref = "Cadres")
+datared$EMPLenc <- relevel(factor(datared$EMPLenc), ref = "CDI")
+datared$DIPLenc <- relevel(factor(datared$DIPLenc), ref = "BAC")
+datared$INAIenc <- relevel(factor(datared$INAIenc), ref = "Actuel")
+summary(glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc
+            ,data=datared, weights = datared$IPONDI, family=quasibinomial))
+## Modele complet
+modl<- glm(change~AGEREVQ+CSMenc+AGEREVQ2+EMPLenc+DIPLenc+INAIenc+Nationalite+
+                     METRODOMenc+Cohabitation+Eco5+SEXEenc+STOCC+TACTMENenc+TRANSenc+TYPLenc
+                     +TYPMRenc+ANEMCenc+NPERS
+            ,data=datared,
+            weights=datared$IPONDI,family = quasibinomial)
+#A plotter la relation entre l'age et la probabilité de demenager pour montrer le terme au carré
+summary(modl)
+# Il y a des problemes pour certaines variables on a pas la necessité de coder differentement
+# hommes et femmes
+# To change reference category
+# datared$x <- relevel(factor(datared$x, ref = 2)
