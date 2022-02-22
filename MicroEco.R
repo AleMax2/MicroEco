@@ -160,11 +160,11 @@ data2<- data2 %>%
   mutate(Cohabitation = case_when(
     MOCO == "11" ~ "Enfcoup",
     MOCO == "12" ~ "Enfmono",
-    MOCO == "21" ~ "Cuplesans",
-    MOCO == "22" ~ "Cupleavec",
+    MOCO == "21" ~ "Couplesans",
+    MOCO == "22" ~ "Coupleavec",
     MOCO == "23" ~ "Adumono",
     MOCO == "31" ~ "horsfam",
-    MOCO == "32" ~ "Saule",
+    MOCO == "32" ~ "Seule",
     MOCO == "40" ~ "horsmen",
     TRUE ~ as.character(MOCO)
   ))
@@ -373,7 +373,10 @@ datared$CSMenc <- relevel(factor(datared$CSMenc), ref = "Cadres")
 datared$EMPLenc <- relevel(factor(datared$EMPLenc), ref = "CDI")
 datared$DIPLenc <- relevel(factor(datared$DIPLenc), ref = "BAC")
 datared$INAIenc <- relevel(factor(datared$INAIenc), ref = "Actuel")
-summary(glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc
+datared$Nationalite <- relevel(factor(datared$Nationalite), ref = "Francais")
+datared$METRODOMenc <- relevel(factor(datared$METRODOMenc), ref = "Metro")
+datared$Cohabitation <- relevel(factor(datared$Cohabitation), ref = "Couplesans")
+summary(glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation
             ,data=datared, weights = datared$IPONDI, family=quasibinomial))
 ## Modele complet
 modl<- glm(change~AGEREVQ+CSMenc+AGEREVQ2+EMPLenc+DIPLenc+INAIenc+Nationalite+
