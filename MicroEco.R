@@ -75,7 +75,7 @@ data2<- data2 %>%
     DIPL == "14" ~ "BAC",
     DIPL == "15" ~ "BACpro",
     DIPL == "16" ~ "BTS",
-    DIPL == "17" ~ "License",
+    DIPL == "17" ~ "Licence",
     DIPL == "18" ~ "Master",
     DIPL == "19" ~ "Doctorat",
     DIPL == "ZZ" ~ "Moins14",
@@ -376,17 +376,19 @@ datared$INAIenc <- relevel(factor(datared$INAIenc), ref = "Actuel")
 datared$Nationalite <- relevel(factor(datared$Nationalite), ref = "Francais")
 datared$METRODOMenc <- relevel(factor(datared$METRODOMenc), ref = "Metro")
 datared$Cohabitation <- relevel(factor(datared$Cohabitation), ref = "Couplesans")
-summary(glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation
+datared$Eco5 <- relevel(factor(datared$Eco5), ref = "Services")
+datared$STOCC <- relevel(factor(datared$STOCC), ref = "Propriet")
+datared$TRANSenc <- relevel(factor(datared$TRANSenc), ref = "Voiture")
+datared$ANEMCenc <- relevel(factor(datared$ANEMCenc), ref = "Moinsde2")
+summary(glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation+Eco5
+            +NPERS+SEXEenc+STOCC+TRANSenc+ANEMCenc+AGEREVQ+AGEREVQ2
             ,data=datared, weights = datared$IPONDI, family=quasibinomial))
+#NA pour Eco5 depend du fait que c'est collineaire à EMPLencNA, les deux representent les chomeurs
 ## Modele complet
-modl<- glm(change~AGEREVQ+CSMenc+AGEREVQ2+EMPLenc+DIPLenc+INAIenc+Nationalite+
-                     METRODOMenc+Cohabitation+Eco5+SEXEenc+STOCC+TACTMENenc+TRANSenc+TYPLenc
-                     +TYPMRenc+ANEMCenc+NPERS
-            ,data=datared,
-            weights=datared$IPONDI,family = quasibinomial)
+modl<- glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation+Eco5
+           +NPERS+SEXEenc+STOCC+TRANSenc+ANEMCenc+AGEREVQ+AGEREVQ2
+           ,data=datared, weights = datared$IPONDI, family=quasibinomial)
 #A plotter la relation entre l'age et la probabilité de demenager pour montrer le terme au carré
 summary(modl)
-# Il y a des problemes pour certaines variables on a pas la necessité de coder differentement
-# hommes et femmes
 # To change reference category
 # datared$x <- relevel(factor(datared$x, ref = 2)
