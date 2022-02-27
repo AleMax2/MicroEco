@@ -122,8 +122,8 @@ data2 <- select(data2,-c(IRAN))
 # Encoding IRANUU
 data2<- data2 %>%
   mutate(Urbain = case_when(
-    IRANUU == "1" ~ "Rurale",
-    IRANUU == "2" ~ "Rurale",
+    IRANUU == "1" ~ "Rural",
+    IRANUU == "2" ~ "Rural",
     IRANUU == "3" ~ "Urbain",
     IRANUU == "4" ~ "Urbain",
     IRANUU == "5" ~ "Urbain",
