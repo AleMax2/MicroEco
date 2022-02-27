@@ -122,11 +122,11 @@ data2 <- select(data2,-c(IRAN))
 # Encoding IRANUU
 data2<- data2 %>%
   mutate(Urbain = case_when(
-    IRANUU == "1" ~ "Ruralememe",
-    IRANUU == "2" ~ "Ruralehors",
-    IRANUU == "3" ~ "Urbainmeme",
-    IRANUU == "4" ~ "Urbainmunit",
-    IRANUU == "5" ~ "Urbainhors",
+    IRANUU == "1" ~ "Rurale",
+    IRANUU == "2" ~ "Rurale",
+    IRANUU == "3" ~ "Urbain",
+    IRANUU == "4" ~ "Urbain",
+    IRANUU == "5" ~ "Urbain",
     IRANUU == "Z" ~ "NewNe",
     TRUE ~ as.character(IRANUU)
   ))
@@ -381,14 +381,41 @@ datared$STOCC <- relevel(factor(datared$STOCC), ref = "Propriet")
 datared$TRANSenc <- relevel(factor(datared$TRANSenc), ref = "Voiture")
 datared$ANEMCenc <- relevel(factor(datared$ANEMCenc), ref = "Moinsde2")
 summary(glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation+Eco5
-            +NPERS+SEXEenc+STOCC+TRANSenc+ANEMCenc+AGEREVQ+AGEREVQ2
-            ,data=datared, weights = datared$IPONDI, family=quasibinomial))
+            +SEXEenc+STOCC+TRANSenc+ANEMCenc+AGEREVQ+AGEREVQ2+Urbain
+            ,data=datared, weights = datared$IPONDI, family=quasibinomial(link="logit")))
 #NA pour Eco5 depend du fait que c'est collineaire à EMPLencNA, les deux representent les chomeurs
 ## Modele complet
-modl<- glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation+Eco5
-           +NPERS+SEXEenc+STOCC+TRANSenc+ANEMCenc+AGEREVQ+AGEREVQ2
-           ,data=datared, weights = datared$IPONDI, family=quasibinomial)
+# modl<- glm(change~CSMenc+EMPLenc+DIPLenc+INAIenc+Nationalite+METRODOMenc+Cohabitation+Eco5
+#            +NPERS+SEXEenc+STOCC+TRANSenc+ANEMCenc+AGEREVQ+AGEREVQ2
+#            ,data=datared, weights = datared$IPONDI, family=quasibinomial)
 #A plotter la relation entre l'age et la probabilité de demenager pour montrer le terme au carré
-summary(modl)
+# summary(modl)
 # To change reference category
 # datared$x <- relevel(factor(datared$x, ref = 2)
+# Les graphiques
+# hist(datared$AGEREVQ, main ="Histogramme de l'Age", ylab= "Fréquence", xlab="Age")
+# library(ggplot2)
+# ggplot(datared, aes(x=CSMenc)) +
+#   geom_bar()+ggtitle("Distribution des CSP")+xlab(NULL)+ylab(NULL)
+# ggplot(datared, aes(x=DIPLenc)) +
+#   geom_bar()+ggtitle("Distribution du niveau d'instruction")+xlab(NULL)+ylab(NULL)
+# library(sjPlot)
+# library(sjmisc)
+# library(sjlabelled)
+# propr<- lm(STOCC=="Propriet"~CSMenc, data=datared, weights=datared$IPONDI)
+# tab_model(propr)
+# tab_model(propr,
+#   pred.labels = c("Intercept", "Agriculteur", "Artisans Commercants","Sans CSP", "Employes", 
+#                   "Intermediare", "Ouvrier", "Retraites"),
+#   dv.labels ="Proprietaire",
+#   string.pred = "Coeffcient",
+#   string.ci = "Conf.Int (95%)",
+#   string.p = "P-Value"
+# )
+# library(scales)
+# ggplot(datared, aes(STOCC)) +
+#  geom_bar(aes(y=..count../sum(..count..)))+ggtitle("Distribution de la situation de logement")+
+#   xlab(NULL)+ylab(NULL)+scale_y_continuous(labels=percent)
+# ggplot()+geom_bar(aes(x=change,y=..count../sum(..count..)), data=datared)+ggtitle("Menages qui on demenagé")+
+#   xlab(NULL)+scale_y_continuous(labels=percent)+ylab(NULL)+
+#   scale_x_continuous(labels= c("","Pas Demenagé","","Demenagé",""))
